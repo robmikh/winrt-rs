@@ -60,6 +60,15 @@ impl Vector3 {
     pub fn normalize(&self) -> Self {
         self / self.length()
     }
+    pub fn normalize_simd(&self) -> Self {
+        use simd::*;
+
+        let mut v = XMVector::load_float3(self);
+        v = v.vec_divide(&v.vec3_len());
+        let mut result = Self::zero();
+        v.store_float3(&mut result);
+        result
+    }
 
     fn impl_add(&self, rhs: &Self) -> Self {
         Self {
